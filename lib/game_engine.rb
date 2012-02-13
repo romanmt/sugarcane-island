@@ -31,4 +31,8 @@ module GameEngine
     end
   end
 
+  def GameEngine.run_game(output)
+    output.puts Game.instance.steps[:start][:text]
+    output.puts "Thanks for playing"
+  end
 end

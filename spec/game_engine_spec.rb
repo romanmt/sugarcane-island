@@ -16,6 +16,15 @@ end
 
 describe GameEngine do
   describe '.run_game' do
+    context 'when the game has a start' do
+      it 'prints the start text' do
+        GameEngine.start('this is my game', :finish)
+        output = double('output')
+        output.should_receive(:puts).with('this is my game')
+        output.should_receive(:puts).with('Thanks for playing')
+        GameEngine.run_game(output)
+      end
+    end
   end
 
   describe '.load_game' do
