@@ -8,21 +8,46 @@ def game_file(contents)
   file
 end
 
-describe GameEngine do
-  describe '.load_game' do
-    after(:each) {@file.close; @file.unlink}
-    
-    context 'when the game has an intro' do
+def load_game(file_contents)
+  file = game_file(file_contents)
+  GameEngine.load_game(file)
+  file.close; file.unlink
+end
 
-      it 'stores the intro message' do
-        @file = game_file('intro "it\'s a game"')
-        GameEngine.load_game(@file.path)
-        Game.instance.intro.should eql('it\'s a game')
+describe GameEngine do
+  describe '.run_game' do
+  end
+
+  describe '.load_game' do
+    
+    context 'when the game has a start' do
+      it 'stores the start and next step' do
+        load_game('start "starting game", :next_step')
+        Game.instance.steps[:start].should eql({text: "starting game", next: :next_step})
       end
     end
 
-    context 'when the game has a tell step' do
-      it 'stores the tell as a step'
+    context 'when the game has a step' do
+      it 'stores the step, text and next step' do
+        load_game('step :first, "the game is on", :second')
+        Game.instance.steps[:first].should eql({text: 'the game is on', next: :second})
+      end
+    end
+
+    context 'when the game has a choose' do
+      it 'stores the step, text and next step options' do
+        load_game('choose :diet_or_regular, "would you like diet or regular?", :diet, :regular')
+        Game.instance.steps[:diet_or_regular].should eql(
+          {text: 'would you like diet or regular?', next: [:diet, :regular]}
+        )
+      end
+    end
+
+    context 'when the game has a finish' do
+      it 'stores the step, text and sets next step to :finish' do
+        load_game('finish :you_died, "You died, play again."')
+        Game.instance.steps[:you_died].should eql({text: "You died, play again.", next: :finish})
+      end
     end
   end
 
