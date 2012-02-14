@@ -22,7 +22,19 @@ describe GameEngine do
         output = double('output')
         output.should_receive(:puts).with('this is my game')
         output.should_receive(:puts).with('Thanks for playing')
-        GameEngine.run_game(output)
+        GameEngine.run_game(nil, output)
+      end
+    end
+
+    context 'when the game contains a next step' do
+      it 'waits for the user to hit enter' do 
+        GameEngine.start('my game', :next)
+        GameEngine.finish(:next, 'thanks for playing')
+        output = double('output')
+        output.should_receive(:puts).twice
+        input = double('input')
+        input.should_receive(:gets)
+        GameEngine.run_game(input, output)
       end
     end
   end
