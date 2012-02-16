@@ -41,10 +41,18 @@ describe GameEngine do
       end
     end
 
+    context 'that has a choice and finish' do
+      it 'gets the users response' do
+        load_game(engine, 'choose :start, "diet or regular?", :diet, :regular
+                           finish :regular, "regular it is"')
+        output.should_receive(:puts).exactly(4).times
+        input.should_receive(:gets).and_return("2")
+        engine.run_game
+      end
+    end
   end
 
   describe '.load_game' do
-    
     context 'that has a start' do
       it 'stores the start and next step' do
         load_game(engine, 'start "starting game", :next_step')

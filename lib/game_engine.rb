@@ -43,13 +43,23 @@ class GameEngine
   def run_game(step = :start)
     @output.puts Game.instance.steps[step][:text]
     if (nstep = next_step(step)) != :finish
-      @input.gets
       run_game(nstep)
     end
   end
 
 private
   def next_step(step)
-    Game.instance.steps[step][:next]
+    unless (s = Game.instance.steps[step][:next]) == :finish
+      if s.respond_to?(:count) 
+        s.each_with_index do | item, index |
+          @output.puts "#{index}. #{item}"
+        end
+        i = @input.gets.chomp.to_i
+        s = s[i-1]
+      else
+        @input.gets
+      end
+    end
+    s
   end
 end
